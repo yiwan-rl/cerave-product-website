@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CeraVe - Reviews</title>
+    <style>
+        :root {
+            --primary-color: #0077b6;
+            --secondary-color: #90e0ef;
+            --accent-color: #023e8a;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --gray-color: #6c757d;
+            --light-gray: #e9ecef;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .logo:hover {
+            color: var(--accent-color);
+        }
+
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--primary-color);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 1.5rem;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--dark-color);
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -5px;
+            left: 0;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-links a.active {
+            color: var(--primary-color);
+        }
+
+        .nav-links a.active::after {
+            width: 100%;
+        }
+
+        /* Main Content Styles */
+        .hero {
+            background-color: var(--secondary-color);
+            padding: 3rem 0;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--accent-color);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            color: var(--dark-color);
+        }
+
+        /* Reviews Section */
+        .reviews-section {
+            padding: 2rem 0;
+        }
+
+        .reviews-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .reviews-header h2 {
+            font-size: 2rem;
+            color: var(--accent-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .reviews-header p {
+            color: var(--gray-color);
+        }
+
+        .reviews-filter {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-weight: 500;
+        }
+
+        .filter-group select {
+            padding: 0.5rem;
+            border: 1px solid var(--light-gray);
+            border-radius: 4px;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .search-box input {
+            padding: 0.5rem;
+            border: 1px solid var(--light-gray);
+            border-radius: 4px;
+            width: 200px;
+        }
+
+        .search-box button {
+            padding: 0.5rem 1rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .search-box button:hover {
+            background-color: var(--accent-color);
+        }
+
+        .reviews-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .review-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .review-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .reviewer {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .reviewer-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .reviewer-info h4 {
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .reviewer-info p {
+            margin: 0;
+            font-size: 0.8rem;
+            color: var(--gray-color);
+        }
+
+        .rating {
+            color: var(--warning-color);
+            font-size: 1.2rem;
+        }
+
+        .review-content p {
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+
+        .review-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--gray-color);
+            font-size: 0.9rem;
+        }
+
+        .review-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .review-actions button {
+            background: none;
+            border: none;
+            color: var(--gray-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+            transition: color 0.3s ease;
+        }
+
+        .review-actions button:hover {
+            color: var(--primary-color);
+        }
+
+        /* Stats Section */
+        .stats-section {
+            padding: 2rem 0;
+            background-color: white;
+            margin: 2rem 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .stats-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .stats-header h2 {
+            font-size: 1.8rem;
+            color: var(--accent-color);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .stats-card {
+            text-align: center;
+            padding: 1.5rem;
+        }
+
+        .stats-card h3 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .stats-card p {
+            color: var(--gray-color);
+        }
+
+        .rating-chart {
+            height: 200px;
+            margin: 2rem auto;
+            max-width: 600px;
+        }
+
+        .chart-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            height: 100%;
+        }
+
+        .chart-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .bar-label {
+            width: 50px;
+            text-align: right;
+        }
+
+        .bar-container {
+            flex-grow: 1;
+            height: 20px;
+            background-color: var(--light-gray);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .bar {
+            height: 100%;
+            background-color: var(--primary-color);
+            border-radius: 10px;
+            transition: width 1s ease-out;
+        }
+
+        .bar-value {
+            width: 50px;
+            text-align: left;
+        }
+
+        /* Write Review Section */
+        .write-review {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin: 2rem 0;
+        }
+
+        .write-review h2 {
+            font-size: 1.8rem;
+            color: var(--accent-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .review-form {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            padding: 0.75rem;
+            border: 1px solid var(--light-gray);
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .star-rating {
+            display: flex;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .star-rating span {
+            cursor: pointer;
+            color: var(--light-gray);
+            transition: color 0.3s ease;
+        }
+
+        .star-rating span.active,
+        .star-rating span:hover,
+        .star-rating span:hover ~ span {
+            color: var(--warning-color);
+        }
+
+        .submit-btn {
+            padding: 0.75rem 1.5rem;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            justify-self: start;
+        }
+
+        .submit-btn:hover {
+            background-color: var(--accent-color);
+        }
+
+        /* Footer Styles */
+        footer {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 3rem 0 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-column h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--secondary-color);
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-column a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-column a:hover {
+            color: var(--secondary-color);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background-color: var(--primary-color);
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .nav-toggle {
+                display: block;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background-color: white;
+                flex-direction: column;
+                align-items: center;
+                padding: 1rem 0;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+                transform: translateY(-150%);
+                transition: transform 0.3s ease;
+                z-index: 999;
+            }
+
+            .nav-links.active {
+                transform: translateY(0);
+            }
+
+            .nav-links li {
+                margin: 0.5rem 0;
+            }
+
+            .reviews-filter {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .search-box {
+                width: 100%;
+            }
+
+            .search-box input {
+                flex-grow: 1;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="index.html" class="logo">CeraVe</a>
+                <button class="nav-toggle" id="navToggle">☰</button>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="reviews.html" class="active">Reviews</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Customer Reviews</h1>
+            <p>See what our customers are saying about our products and share your own experience.</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <section class="reviews-section">
+            <div class="reviews-header">
+                <h2>Moisturizing Cream Reviews</h2>
+                <p>Our bestselling product with over 1,000 reviews</p>
+            </div>
+
+            <div class="reviews-filter">
+                <div class="filter-group">
+                    <label for="sort-by">Sort by:</label>
+                    <select id="sort-by">
+                        <option value="newest">Newest</option>
+                        <option value="highest">Highest Rating</option>
+                        <option value="lowest">Lowest Rating</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filter-rating">Filter by rating:</label>
+                    <select id="filter-rating">
+                        <option value="all">All Ratings</option>
+                        <option value="5">5 Stars</option>
+                        <option value="4">4 Stars</option>
+                        <option value="3">3 Stars</option>
+                        <option value="2">2 Stars</option>
+                        <option value="1">1 Star</option>
+                    </select>
+                </div>
+                <div class="search-box">
+                    <input type="text" placeholder="Search reviews...">
+                    <button>Search</button>
+                </div>
+            </div>
+
+            <div class="reviews-grid" id="reviewsGrid">
+                <!-- Review cards will be dynamically generated here -->
+            </div>
+        </section>
+
+        <section class="stats-section">
+            <div class="stats-header">
+                <h2>Review Statistics</h2>
+            </div>
+            <div class="stats-grid">
+                <div class="stats-card">
+                    <h3>4.7</h3>
+                    <p>Average Rating</p>
+                </div>
+                <div class="stats-card">
+                    <h3>1,243</h3>
+                    <p>Total Reviews</p>
+                </div>
+                <div class="stats-card">
+                    <h3>97%</h3>
+                    <p>Would Recommend</p>
+                </div>
+            </div>
+
+            <div class="rating-chart">
+                <div class="chart-bars" id="ratingChart">
+                    <!-- Rating bars will be dynamically generated here -->
+                </div>
+            </div>
+        </section>
+
+        <section class="write-review">
+            <h2>Write a Review</h2>
+            <form class="review-form" id="reviewForm">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="rating">Rating</label>
+                    <div class="star-rating" id="starRating">
+                        <span data-value="1">★</span>
+                        <span data-value="2">★</span>
+                        <span data-value="3">★</span>
+                        <span data-value="4">★</span>
+                        <span data-value="5">★</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="title">Review Title</label>
+                    <input type="text" id="title" required>
+                </div>
+                <div class="form-group">
+                    <label for="review">Your Review</label>
+                    <textarea id="review" required></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Submit Review</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>CeraVe</h3>
+                    <p>Developed with dermatologists, CeraVe offers a complete line of skincare products that contain essential ceramides and other ingredients that help restore the skin's natural barrier.</p>
+                    <div class="social-links">
+                        <a href="#" aria-label="Facebook">f</a>
+                        <a href="#" aria-label="Twitter">t</a>
+                        <a href="#" aria-label="Instagram">i</a>
+                        <a href="#" aria-label="YouTube">y</a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Products</h3>
+                    <ul>
+                        <li><a href="#">Moisturizers</a></li>
+                        <li><a href="#">Cleansers</a></li>
+                        <li><a href="#">Serums</a></li>
+                        <li><a href="#">Eye Care</a></li>
+                        <li><a href="#">Body Care</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Help</h3>
+                    <ul>
+                        <li><a href="#">FAQs</a></li>
+                        <li><a href="#">Shipping</a></li>
+                        <li><a href="#">Returns</a></li>
+                        <li><a href="#">Order Status</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Subscribe</h3>
+                    <p>Stay updated with our latest products and offers.</p>
+                    <form>
+                        <div class="form-group">
+                            <input type="email" placeholder="Your email address" required>
+                        </div>
+                        <button type="submit" class="submit-btn">Subscribe</button>
+                    </form>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2023 CeraVe. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Navigation Toggle
+        document.getElementById('navToggle').addEventListener('click', function() {
+            document.getElementById('navLinks').classList.toggle('active');
+        });
+
+        // Sample review data
+        const reviews = [
+            {
+                name: "Sarah J.",
+                initial: "S",
+                date: "2023-10-15",
+                rating: 5,
+                title: "Amazing for Dry Skin!",
+                content: "I've been using this moisturizing cream for about a month now and I'm absolutely in love with it! My skin has never felt so hydrated and smooth. It's perfect for my dry skin, especially during winter months.",
+                helpful: 42,
+                verified: true
+            },
+            {
+                name: "Michael T.",
+                initial: "M",
+                date: "2023-09-28",
+                rating: 4,
+                title: "Good but a bit heavy",
+                content: "This cream works really well for hydration and has definitely improved my skin's texture. The only reason I'm giving it 4 stars instead of 5 is that it feels a bit heavy on my combination skin. Still, I would recommend it for drier skin types.",
+                helpful: 18,
+                verified: true
+            },
+            {
+                name: "Emma L.",
+                initial: "E",
+                date: "2023-10-05",
+                rating: 5,
+                title: "Holy Grail Product",
+                content: "I've tried so many moisturizers over the years and nothing compares to this one. It's fragrance-free which is perfect for my sensitive skin, and it keeps my face hydrated all day long. Will definitely repurchase again and again!",
+                helpful: 36,
+                verified: true
+            },
+            {
+                name: "David R.",
+                initial: "D",
+                date: "2023-09-10",
+                rating: 3,
+                title: "Decent but not for oily skin",
+                content: "The product itself seems high quality, but it's just too rich for my oily skin. It caused some breakouts after a few days of use. I think it would be great for someone with normal to dry skin though.",
+                helpful: 15,
+                verified: false
+            },
+            {
+                name: "Jennifer K.",
+                initial: "J",
+                date: "2023-10-12",
+                rating: 5,
+                title: "Perfect for Eczema",
+                content: "I have struggled with eczema for years and this is the only moisturizer that doesn't irritate my skin and actually helps heal the dry patches. It's unscented and very gentle. Highly recommend for sensitive skin!",
+                helpful: 29,
+                verified: true
+            },
+            {
+                name: "Robert P.",
+                initial: "R",
+                date: "2023-08-22",
+                rating: 4,
+                title: "Great value",
+                content: "This cream lasts forever since you only need a small amount. It's very moisturizing and has helped with my dry patches. The only downside is that it takes a bit of time to absorb fully.",
+                helpful: 11,
+                verified: true
+            }
+        ];
+
+        // Rating statistics
+        const ratingStats = {
+            5: 75,
+            4: 15,
+            3: 5,
+            2: 3,
+            1: 2
+        };
+
+        // Render reviews
+        function renderReviews(reviewsArray) {
+            const reviewsGrid = document.getElementById('reviewsGrid');
+            reviewsGrid.innerHTML = '';
+
+            reviewsArray.forEach(review => {
+                const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+                const date = new Date(review.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+                
+                const reviewCard = document.createElement('div');
+                reviewCard.className = 'review-card';
+                reviewCard.innerHTML = `
+                    <div class="review-header">
+                        <div class="reviewer">
+                            <div class="reviewer-avatar">${review.initial}</div>
+                            <div class="reviewer-info">
+                                <h4>${review.name}</h4>
+                                <p>${date} ${review.verified ? '✓ Verified Purchase' : ''}</p>
+                            </div>
+                        </div>
+                        <div class="rating">${stars}</div>
+                    </div>
+                    <div class="review-content">
+                        <h3>${review.title}</h3>
+                        <p>${review.content}</p>
+                    </div>
+                    <div class="review-footer">
+                        <div class="review-actions">
+                            <button class="helpful-btn" data-helpful="${review.helpful}">
+                                👍 Helpful (${review.helpful})
+                            </button>
+                            <button class="report-btn">Report</button>
+                        </div>
+                    </div>
+                `;
+                reviewsGrid.appendChild(reviewCard);
+            });
+
+            // Add event listeners to helpful buttons
+            document.querySelectorAll('.helpful-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const currentHelpful = parseInt(this.dataset.helpful);
+                    this.dataset.helpful = currentHelpful + 1;
+                    this.innerHTML = `👍 Helpful (${currentHelpful + 1})`;
+                    this.disabled = true;
+                });
+            });
+        }
+
+        // Render rating chart
+        function renderRatingChart() {
+            const chartContainer = document.getElementById('ratingChart');
+            chartContainer.innerHTML = '';
+
+            for (let i = 5; i >= 1; i--) {
+                const percentage = ratingStats[i];
+                
+                const barElement = document.createElement('div');
+                barElement.className = 'chart-bar';
+                barElement.innerHTML = `
+                    <div class="bar-label">${i} ★</div>
+                    <div class="bar-container">
+                        <div class="bar" style="width: 0%"></div>
+                    </div>
+                    <div class="bar-value">${percentage}%</div>
+                `;
+                chartContainer.appendChild(barElement);
+
+                // Animate the bar after a short delay
+                setTimeout(() => {
+                    barElement.querySelector('.bar').style.width = `${percentage}%`;
+                }, 100 * (5 - i + 1));
+            }
+        }
+
+        // Star rating functionality
+        function initStarRating() {
+            const stars = document.querySelectorAll('#starRating span');
+            let selectedRating = 0;
+
+            stars.forEach(star => {
+                star.addEventListener('click', function() {
+                    selectedRating = parseInt(this.dataset.value);
+                    updateStars();
+                });
+
+                star.addEventListener('mouseover', function() {
+                    const hoverValue = parseInt(this.dataset.value);
+                    highlightStars(hoverValue);
+                });
+            });
+
+            document.getElementById('starRating').addEventListener('mouseout', function() {
+                highlightStars(selectedRating);
+            });
+
+            function updateStars() {
+                highlightStars(selectedRating);
+            }
+
+            function highlightStars(value) {
+                stars.forEach(star => {
+                    const starValue = parseInt(star.dataset.value);
+                    if (starValue <= value) {
+                        star.classList.add('active');
+                    } else {
+                        star.classList.remove('active');
+                    }
+                });
+            }
+        }
+
+        // Form submission
+        document.getElementById('reviewForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thank you for your review! It will be published after moderation.');
+            this.reset();
+            document.querySelectorAll('#starRating span').forEach(star => {
+                star.classList.remove('active');
+            });
+        });
+
+        // Sort and filter functionality
+        document.getElementById('sort-by').addEventListener('change', function() {
+            const sortValue = this.value;
+            let sortedReviews = [...reviews];
+
+            if (sortValue === 'newest') {
+                sortedRe
